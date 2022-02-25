@@ -11,6 +11,7 @@ bin-release/
 *.swf
 *.air
 *.ipa
+node_modules
 *.apk
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
