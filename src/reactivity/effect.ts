@@ -11,8 +11,9 @@ class ReactiveEffect {
     this._fn = fn;
   }
   run() {
-    // cleanupEffect(this);
     activeEffect = this;
+    // 死循环
+    // cleanupEffect(this);
     return this._fn();
   }
   stop() {
