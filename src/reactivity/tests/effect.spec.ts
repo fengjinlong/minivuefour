@@ -4,29 +4,34 @@ describe("effect", () => {
   it("happy path", () => {
     const user = reactive({
       age: 10,
+      name: 'name',
     });
     let nextAge;
+    let nextName;
     effect(() => {
       nextAge = user.age + 1;
+      nextName = user.name + 1;
     });
+
     expect(nextAge).toBe(11);
-    user.age++
+    expect(nextName).toBe('name1');
+    user.age++;
     expect(nextAge).toBe(12);
     // update
     // user.age++
     // expect(nextAge).toBe(12)
   });
-  // it('should return runner when call effect', () => {
-  //   let foo = 10
-  //   const runner = effect(() => {
-  //     foo++
-  //     return foo
-  //   })
-  //   expect(foo).toBe(11)
-  //   const r = runner()
-  //   expect(foo).toBe(12)
-  //   expect(r).toBe(foo)
-  // })
+  it('should return runner when call effect', () => {
+    let foo = 10
+    const runner = effect(() => {
+      foo++
+      return foo
+    })
+    expect(foo).toBe(11)
+    const r = runner()
+    expect(foo).toBe(12)
+    expect(r).toBe(foo)
+  })
 
   // it('scheduler', () => {
   //   let dummy
@@ -46,6 +51,13 @@ describe("effect", () => {
   //   expect(scheduler).not.toHaveBeenCalled()
   //   expect(dummy).toBe(1)
 
+  //   /**
+  //    * 1 执行一次 effect 12313123
+  //    * 
+  //    * 1 响应式对象更新，scheduler 执行一次,effect 不执行，也就是不执行 runner
+  //    * 2 执行 runner effect执行
+  //    * 
+  //   */
   //   obj.foo++
   //   expect(scheduler).toHaveBeenCalledTimes(1)
   //   expect(dummy).toBe(1)

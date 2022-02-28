@@ -8,6 +8,7 @@ export function reactive (raw) {
       return res
     }, 
     set(target, key, value) {
+      console.log('set')
       const res = Reflect.set(target, key, value);
       trigger(target, key)
       return res
