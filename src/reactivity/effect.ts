@@ -1,8 +1,12 @@
+import { extend } from "../shared/index";
+
 let activeEffect;
 let targetMap = new WeakMap();
 class ReactiveEffect {
   private _fn: any;
   deps = [];
+  onStop?: () => void;
+  active = true;
   constructor(fn, public scheduler?) {
     this._fn = fn;
   }
@@ -11,19 +15,26 @@ class ReactiveEffect {
     return this._fn();
   }
   stop() {
-    cleanupEffect(this);
+    if (this.active) {
+      cleanupEffect(this);
+      if (this.onStop) {
+        this.onStop();
+      }
+      this.active = false;
+    }
   }
 }
 
 export function effect(fn, options: any = {}) {
   const scheduler = options.scheduler;
   const _effect = new ReactiveEffect(fn, scheduler);
-  _effect.run()
+  extend(_effect, options);
+  // _effect.onStop = options.onStop;
+  _effect.run();
 
-  const runner: any= _effect.run.bind(_effect)
-  runner.effect = _effect
+  const runner: any = _effect.run.bind(_effect);
+  runner.effect = _effect;
   return runner;
-
 }
 
 export function stop(runner) {
@@ -44,12 +55,11 @@ export function track(target, key) {
     dep = new Set();
     depMap.set(key, dep);
   }
-  // if (activeEffect) {
+  if (activeEffect) {
+    dep.add(activeEffect);
 
-  dep.add(activeEffect);
-
-  activeEffect.deps.push(dep);
-  // }
+    activeEffect.deps.push(dep);
+  }
 }
 export function trigger(target, key) {
   let depMap = targetMap.get(target);
