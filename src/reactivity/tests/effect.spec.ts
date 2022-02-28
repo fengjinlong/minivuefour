@@ -1,4 +1,4 @@
-import { effect,stop} from "../effect";
+import { effect, stop } from "../effect";
 import { reactive } from "../reactive";
 describe("effect", () => {
   it("happy path", () => {
@@ -67,13 +67,13 @@ describe("effect", () => {
 
   it("stop", () => {
     let dummy;
-    const obj = reactive({prop: 1});
+    const obj = reactive({ prop: 1 });
     const runner = effect(() => {
       dummy = obj.prop;
-    })
-    obj.prop = 2
-    expect(dummy).toBe(2)
-    stop(runner)
+    });
+    obj.prop = 2;
+    expect(dummy).toBe(2);
+    stop(runner);
     // 如果stop 包裹这个reunner, 数据不再是响应式的，
     // 也就是说需要把 对应的effect 从 deps 里删掉
     // 根据单测，stop参数就是runner
@@ -84,22 +84,47 @@ describe("effect", () => {
     // 先执行get 在执行set
     // obj.prop++;
     obj.prop = 3;
-    expect(dummy).toBe(2)
-    runner()
-    expect(dummy).toBe(3)
-  })
+    expect(dummy).toBe(2);
+    runner();
+    expect(dummy).toBe(3);
+  });
   it("onStop", () => {
     const obj = reactive({
-      foo:1
-    })
+      foo: 1,
+    });
     const onStop = jest.fn();
     let dummy;
-    const runner = effect(() => {
-      dummy = obj.foo;
-    }, {
-      onStop
-    })
-    stop(runner)
-    expect(onStop).toBeCalledTimes(1)
-  })
+    const runner = effect(
+      () => {
+        dummy = obj.foo;
+      },
+      {
+        onStop,
+      }
+    );
+    stop(runner);
+    expect(onStop).toBeCalledTimes(1);
+  });
+
+  it("double effect", () => {
+    const obj = reactive({
+      a: 1,
+      b: 1,
+    });
+    let temp1;
+    let temp2;
+    effect(() => {
+      console.log('effect1')
+      effect(() => {
+        console.log('effect2')
+        temp2 = obj.b + 1;
+      });
+      console.log('ok')
+
+      temp1 = obj.a + 1;
+    });
+    obj.a = 2;
+    expect(temp1).toBe(3);
+
+  });
 });

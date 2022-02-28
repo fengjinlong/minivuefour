@@ -11,6 +11,7 @@ class ReactiveEffect {
     this._fn = fn;
   }
   run() {
+    // cleanupEffect(this);
     activeEffect = this;
     return this._fn();
   }
@@ -63,7 +64,12 @@ export function track(target, key) {
 }
 export function trigger(target, key) {
   let depMap = targetMap.get(target);
+  if (!depMap) return;
   let dep = depMap.get(key);
+  
+  // const effectsToRun:any = new Set(dep)
+  // effectsToRun.forEach(effect => effect.run())
+
   for (const effect of dep) {
     if (effect.scheduler) {
       effect.scheduler();
