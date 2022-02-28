@@ -2,26 +2,33 @@ let activeEffect;
 let targetMap = new WeakMap();
 class ReactiveEffect {
   private _fn: any;
-   deps= [] ;
+  deps = [];
   constructor(fn, public scheduler?) {
     this._fn = fn;
   }
   run() {
     activeEffect = this;
-    cleanupEffect(this)
-    // console.log(this.deps)
     return this._fn();
+  }
+  stop() {
+    cleanupEffect(this);
   }
 }
 
-export function effect(fn, options:any={}) {
-  const scheduler = options.scheduler
+export function effect(fn, options: any = {}) {
+  const scheduler = options.scheduler;
   const _effect = new ReactiveEffect(fn, scheduler);
-  // console.log(1)
-  _effect.run();
-  return _effect.run
+  _effect.run()
+
+  const runner: any= _effect.run.bind(_effect)
+  runner.effect = _effect
+  return runner;
+
 }
 
+export function stop(runner) {
+  runner.effect.stop();
+}
 export function track(target, key) {
   // WeakMap - key
   // target Map
@@ -39,34 +46,31 @@ export function track(target, key) {
   }
   // if (activeEffect) {
 
-    
-    dep.add(activeEffect);
+  dep.add(activeEffect);
 
-    activeEffect.deps.push(dep);
+  activeEffect.deps.push(dep);
   // }
 }
-export function trigger (target, key) {
+export function trigger(target, key) {
   let depMap = targetMap.get(target);
-  let dep = depMap.get(key)
-  for(const effect of dep) {
+  let dep = depMap.get(key);
+  for (const effect of dep) {
     if (effect.scheduler) {
-      effect.scheduler()
+      effect.scheduler();
     } else {
-
-      effect.run()
+      effect.run();
     }
   }
 }
 function cleanupEffect(effect: any) {
-  console.log(effect.deps.length)
+  // console.log(effect.deps.length)
   // console.log(effect.deps)
-  let {deps} = effect
-  // let deps = new Set(deps) 
+  let { deps } = effect;
+  // let deps = new Set(deps)
   if (deps.length) {
-    for(let i =0;i<deps.length;i++) {
-      deps[i].delete(effect)
+    for (let i = 0; i < deps.length; i++) {
+      deps[i].delete(effect);
     }
-    deps.length = 0
+    deps.length = 0;
   }
 }
-
