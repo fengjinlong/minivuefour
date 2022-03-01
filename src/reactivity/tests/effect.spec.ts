@@ -4,22 +4,13 @@ describe("effect", () => {
   it("happy path", () => {
     const user = reactive({
       age: 10,
-      name: "name",
     });
     let nextAge;
-    // let nextName;
     effect(() => {
       nextAge = user.age + 1;
-      // nextName = user.name + 1;
     });
-
-    expect(nextAge).toBe(11);
-    // expect(nextName).toBe('name1');
     user.age++;
     expect(nextAge).toBe(12);
-    // update
-    // user.age++
-    // expect(nextAge).toBe(12)
   });
   it("should return runner when call effect", () => {
     let foo = 10;
@@ -106,7 +97,22 @@ describe("effect", () => {
     expect(onStop).toBeCalledTimes(1);
   });
 
-  it("double effect", () => {
+  it.skip("effect 压栈的测试", () => {
+    const counter = reactive({
+      num: 0,
+      num2: 0,
+    });
+
+    effect(() => {
+      effect(() => {
+        console.log("num2:", counter.num2);
+      });
+      console.log("num:", counter.num);
+    });
+    counter.num++;
+    // expect(counter.num).toBe(1)
+  });
+  it.skip("double effect", () => {
     const obj = reactive({
       a: 1,
       b: 1,
@@ -114,17 +120,16 @@ describe("effect", () => {
     let temp1;
     let temp2;
     effect(() => {
-      console.log('effect1')
+      console.log("effect1");
       effect(() => {
-        console.log('effect2')
+        console.log("effect2");
         temp2 = obj.b + 1;
       });
-      console.log('ok')
+      console.log("ok");
 
       temp1 = obj.a + 1;
     });
     obj.a = 2;
     expect(temp1).toBe(3);
-
   });
 });

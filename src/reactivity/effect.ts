@@ -31,7 +31,6 @@ export function effect(fn, options: any = {}) {
   const scheduler = options.scheduler;
   const _effect = new ReactiveEffect(fn, scheduler);
   extend(_effect, options);
-  // _effect.onStop = options.onStop;
   _effect.run();
 
   const runner: any = _effect.run.bind(_effect);
@@ -58,6 +57,11 @@ export function track(target, key) {
     depMap.set(key, dep);
   }
   if (activeEffect) {
+    // cleanupEffect(activeEffect);
+
+    activeEffect.deps = []
+    activeEffect.deps.length = 0;
+
     dep.add(activeEffect);
 
     activeEffect.deps.push(dep);
@@ -67,7 +71,7 @@ export function trigger(target, key) {
   let depMap = targetMap.get(target);
   if (!depMap) return;
   let dep = depMap.get(key);
-  
+
   // const effectsToRun:any = new Set(dep)
   // effectsToRun.forEach(effect => effect.run())
 
@@ -84,10 +88,16 @@ function cleanupEffect(effect: any) {
   // console.log(effect.deps)
   let { deps } = effect;
   // let deps = new Set(deps)
+  // console.log(deps.length)
+  // console.log(deps)
+  // const newSet = new Set();
+  // console.log(newSet)
+
   if (deps.length) {
     for (let i = 0; i < deps.length; i++) {
       deps[i].delete(effect);
     }
     deps.length = 0;
   }
+  // console.log(deps)
 }
