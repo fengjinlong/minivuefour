@@ -129,16 +129,22 @@ export const wasTracked = (dep): boolean => (dep.w & trackOpBit) > 0;
 export const newTracked = (dep): boolean => (dep.n & trackOpBit) > 0;
 
 function trackEffects(dep) {
+  // 是否是新增的依赖
   let shouldTrack = false;
   if (effectTrackDepth <= 30) {
+     // 查看是否记录过当前依赖
     if (!newTracked(dep)) {
-      // 不是新收集,设置新收集
+      // 不是新依赖,标记为新依赖
       dep.n |= trackOpBit;
-      // 没有收集的设置为应该 track, 已经收集的 不 tract
+      // 如果之前已经收集过，则不是新增依赖
+      // 如果依赖已经被收集，则不需要再次收集
       shouldTrack = !wasTracked(dep);
     }
   } else {
     // balabala
+     // 如果层叠数超过了最大，则查看当前dep在effect中实收存储过
+    // 因为超过最大进入前会清空所有dep，
+    // 第一次进入一定会收集，当收集重复key时才会跳过
   }
   if (shouldTrack) {
     // 添加
@@ -147,11 +153,12 @@ function trackEffects(dep) {
   }
 }
 
+// 数据收集是动态的，所以每次执行收集前需要清空之前的依赖，然后附加上现在的依赖，确保依赖正确
 export const createDep = (effects?) => {
   const dep: any = new Set(effects);
-  // 已经标记
+  // 之前被收集
   dep.w = 0;
-  // 新标记
+  // 当前被收集
   dep.n = 0;
   return dep;
 };
