@@ -1,4 +1,5 @@
-import { effect, stop } from "../effect";
+// import { effect, stop } from "../effect";
+import { effect, stop } from "../effect2";
 import { reactive } from "../reactive";
 describe("effect", () => {
   it("happy path", () => {
@@ -30,7 +31,7 @@ describe("effect", () => {
     const scheduler = jest.fn(() => {
       run = runner;
     });
-    const obj = reactive({ foo: 1 });
+    const obj:any= reactive({ foo: 1 });
     const runner = effect(
       () => {
         dummy = obj.foo;
@@ -97,7 +98,7 @@ describe("effect", () => {
     expect(onStop).toBeCalledTimes(1);
   });
 
-  it.skip("effect 压栈的测试", () => {
+  it("effect 压栈的测试", () => {
     const counter = reactive({
       num: 0,
       num2: 0,
@@ -110,9 +111,9 @@ describe("effect", () => {
       console.log("num:", counter.num);
     });
     counter.num++;
-    // expect(counter.num).toBe(1)
+    expect(counter.num).toBe(1)
   });
-  it.skip("double effect", () => {
+  it("double effect", () => {
     const obj = reactive({
       a: 1,
       b: 1,

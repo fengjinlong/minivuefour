@@ -98,7 +98,8 @@ export function effect<T = any>(fn: () => T, options?) {
   if (options) {
     extend(_effect, options);
   }
-  if (!options) {
+  // 没有options 或者 没写 lazy， 那么必须执行第一次的 effect 
+  if (!options || !options.lazy) {
     _effect.run();
   }
   const runner: any = _effect.run.bind(_effect);
@@ -132,7 +133,7 @@ function trackEffects(dep) {
   // 是否是新增的依赖
   let shouldTrack = false;
   if (effectTrackDepth <= 30) {
-     // 查看是否记录过当前依赖
+    // 查看是否记录过当前依赖
     if (!newTracked(dep)) {
       // 不是新依赖,标记为新依赖
       dep.n |= trackOpBit;
@@ -142,7 +143,7 @@ function trackEffects(dep) {
     }
   } else {
     // balabala
-     // 如果层叠数超过了最大，则查看当前dep在effect中实收存储过
+    // 如果层叠数超过了最大，则查看当前dep在effect中实收存储过
     // 因为超过最大进入前会清空所有dep，
     // 第一次进入一定会收集，当收集重复key时才会跳过
   }
@@ -162,7 +163,24 @@ export const createDep = (effects?) => {
   dep.n = 0;
   return dep;
 };
+
 export function trigger(target, key) {
+  let depMap = targetMap.get(target);
+  if (!depMap) return;
+  let dep = depMap.get(key);
+
+  // const effectsToRun:any = new Set(dep)
+  // effectsToRun.forEach(effect => effect.run())
+  for (const effect of dep) {
+    if (effect.scheduler) {
+      effect.scheduler();
+    } else {
+      effect.run();
+    }
+  }
+}
+
+export function trigger2(target, key) {
   const depsMap = targetMap.get(target);
   if (!depsMap) {
     // never been tracked
@@ -171,9 +189,10 @@ export function trigger(target, key) {
   let deps: any = [];
 
   deps.push(depsMap);
+  // return
   if (deps.length === 1) {
     if (deps[0]) {
-      triggerEffects(deps[0]);
+      triggerEffects(deps);
     }
   } else {
   }

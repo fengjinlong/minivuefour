@@ -59,7 +59,7 @@ export function track(target, key) {
   if (activeEffect) {
     // cleanupEffect(activeEffect);
 
-    activeEffect.deps = []
+    activeEffect.deps = [];
     activeEffect.deps.length = 0;
 
     dep.add(activeEffect);

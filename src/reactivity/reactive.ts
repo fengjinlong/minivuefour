@@ -1,4 +1,5 @@
-import { track, trigger } from "./effect";
+// import { track, trigger } from "./effect";
+import { track, trigger } from "./effect2";
 
 export function reactive (raw) {
   return new Proxy(raw, {
@@ -8,9 +9,10 @@ export function reactive (raw) {
       return res
     }, 
     set(target, key, value) {
-      // console.log('set')
+      // console.log('sss')
       const res = Reflect.set(target, key, value);
       trigger(target, key)
+
       return res
     }
   })
