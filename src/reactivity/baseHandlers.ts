@@ -1,4 +1,4 @@
-import { isObject } from "../shared";
+import { extend, isObject } from "../shared";
 import { track, trigger } from "./effect2";
 import { reactive, ReactiveFlegs, readonly } from "./reactive";
 
@@ -46,3 +46,7 @@ export const readonlyHandles = {
     return true;
   },
 };
+const shallowReadonlyGet = createGetter(true, true);
+export const shallowReadonlyHandles = extend({}, readonlyHandles, {
+  get: shallowReadonlyGet,
+});

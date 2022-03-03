@@ -1,5 +1,5 @@
 // import { track, trigger } from "./effect";
-import { mutableHandles, readonlyHandles } from "./baseHandlers";
+import { mutableHandles, readonlyHandles, shallowReadonlyHandles } from "./baseHandlers";
 import { track, trigger } from "./effect2";
 export const enum ReactiveFlegs {
   IS_REACTIVE = '__v_isReactive',
@@ -30,4 +30,7 @@ export function isReactive(raw) {
 }
 export function isProxy(raw) {
   return !!raw[ReactiveFlegs.IS_REACTIVE] || !!raw[ReactiveFlegs.IS_READONLY]
+}
+export function shallowReadonly(raw) {
+  return createReactiveObject(raw, shallowReadonlyHandles)
 }

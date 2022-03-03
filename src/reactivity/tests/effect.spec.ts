@@ -74,8 +74,8 @@ describe("effect", () => {
     // obj.prop = 5;
 
     // 先执行get 在执行set
-    // obj.prop++;
-    obj.prop = 3;
+    obj.prop++;
+    // obj.prop = 3;
     expect(dummy).toBe(2);
     runner();
     expect(dummy).toBe(3);
