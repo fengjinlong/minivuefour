@@ -4,13 +4,13 @@ import { reactive, ReactiveFlegs, readonly } from "./reactive";
 
 // shallow 浅层次
 function createGetter(isReadOnly = false, shallow = false) {
-  return function get(target, key) {
+  return function get(target, key, receiver) {
     if (key === ReactiveFlegs.IS_REACTIVE) {
       return !isReadOnly;
     } else if (key === ReactiveFlegs.IS_READONLY) {
       return isReadOnly;
     }
-    let res = Reflect.get(target, key);
+    let res = Reflect.get(target, key, receiver);
     if (shallow) {
       return res;
     }
