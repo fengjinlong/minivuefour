@@ -1,0 +1,29 @@
+import { effect } from "./effect2";
+import { ReactiveEffect } from "./effect2";
+// .value
+// 缓存 dirty
+export function computed(getter) {
+  let value
+  let dirty = true;
+
+
+
+  const _effect = effect(getter, {
+    lazy:  true,
+    scheduler() {
+      if (!dirty) {
+        dirty = true;
+      }
+    }
+  })
+  const obj = {
+    get value() {
+      if (dirty) {
+        value = _effect()
+        dirty = false
+      }
+      return value
+    }
+  }
+  return obj
+}

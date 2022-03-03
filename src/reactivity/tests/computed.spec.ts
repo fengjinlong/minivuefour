@@ -21,6 +21,8 @@ describe('computed', () => {
     const value = reactive({
       foo: 1
     })
+    
+
     const getter = jest.fn(() => {
       return value.foo
     })
@@ -46,14 +48,22 @@ describe('computed', () => {
     
     // 测试 3 触发set 操作，同样不想再次调用一次getter()，不然缓存有什么用
     expect(getter).toHaveBeenCalledTimes(1)
-
+    
+    
     // 测试 4
     // // now it should computed
     expect(cValue.value).toBe(2)
     expect(getter).toHaveBeenCalledTimes(2)
-
+    
     // // // sgould not computed again
     cValue.value;
     expect(getter).toHaveBeenCalledTimes(2)
+
+    value.foo = 100
+    expect(getter).toHaveBeenCalledTimes(2)
+
+    // cValue.value
+
+    // expect(getter).toHaveBeenCalledTimes(2)
   })
 })
