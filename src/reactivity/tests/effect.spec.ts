@@ -133,4 +133,20 @@ describe("effect", () => {
     obj.a = 2;
     expect(temp1).toBe(3);
   });
+  it("lazy", () => {
+    const obj = reactive({
+      a:1
+    })
+    let t = 1;
+    let run = effect(() => {
+      t= obj.a
+    }, {
+      lazy: true
+    })
+    obj.a = 2;
+    expect(t).toBe(1)
+    run()
+    expect(t).toBe(2)
+  })
+
 });

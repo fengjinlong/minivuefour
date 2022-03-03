@@ -6,7 +6,7 @@ export const isArray = Array.isArray;
 let targetMap = new WeakMap();
 let effectTrackDepth = 0;
 
-class ReactiveEffect {
+export class ReactiveEffect {
   active = true;
   deps = [];
   parent = undefined;
@@ -100,6 +100,7 @@ export function effect<T = any>(fn: () => T, options?) {
   }
   // 没有options 或者 没写 lazy， 那么必须执行第一次的 effect 
   if (!options || !options.lazy) {
+  // if (!options) {
     _effect.run();
   }
   const runner: any = _effect.run.bind(_effect);
