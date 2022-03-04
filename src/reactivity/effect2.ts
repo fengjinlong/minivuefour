@@ -98,9 +98,9 @@ export function effect<T = any>(fn: () => T, options?) {
   if (options) {
     extend(_effect, options);
   }
-  // 没有options 或者 没写 lazy， 那么必须执行第一次的 effect 
+  // 没有options 或者 没写 lazy， 那么必须执行第一次的 effect
   if (!options || !options.lazy) {
-  // if (!options) {
+    // if (!options) {
     _effect.run();
   }
   const runner: any = _effect.run.bind(_effect);
@@ -112,7 +112,8 @@ export function stop(runner) {
   runner.effect.stop();
 }
 export function track(target, key) {
-  if (activeEffect) {
+  // if (activeEffect) {
+    if (shouldTrack && activeEffect) {
     let depsMap = targetMap.get(target);
     if (!depsMap) {
       targetMap.set(target, (depsMap = new Map()));
@@ -125,12 +126,15 @@ export function track(target, key) {
     trackEffects(dep);
   }
 }
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
+}
 // 已经收集
 export const wasTracked = (dep): boolean => (dep.w & trackOpBit) > 0;
 // 新收集
 export const newTracked = (dep): boolean => (dep.n & trackOpBit) > 0;
 
-function trackEffects(dep) {
+export function trackEffects(dep) {
   // 是否是新增的依赖
   let shouldTrack = false;
   if (effectTrackDepth <= 30) {
@@ -172,6 +176,16 @@ export function trigger(target, key) {
 
   // const effectsToRun:any = new Set(dep)
   // effectsToRun.forEach(effect => effect.run())
+  triggerEffect(dep);
+  // for (const effect of dep) {
+  //   if (effect.scheduler) {
+  //     effect.scheduler();
+  //   } else {
+  //     effect.run();
+  //   }
+  // }
+}
+export function triggerEffect(dep: any) {
   for (const effect of dep) {
     if (effect.scheduler) {
       effect.scheduler();
@@ -181,35 +195,35 @@ export function trigger(target, key) {
   }
 }
 
-export function trigger2(target, key) {
-  const depsMap = targetMap.get(target);
-  if (!depsMap) {
-    // never been tracked
-    return;
-  }
-  let deps: any = [];
+// export function trigger2(target, key) {
+//   const depsMap = targetMap.get(target);
+//   if (!depsMap) {
+//     // never been tracked
+//     return;
+//   }
+//   let deps: any = [];
 
-  deps.push(depsMap);
-  // return
-  if (deps.length === 1) {
-    if (deps[0]) {
-      triggerEffects(deps);
-    }
-  } else {
-  }
-}
-export function triggerEffects(dep) {
-  // spread into array for stabilization
-  for (const effect of isArray(dep) ? dep : [...dep]) {
-    if (effect !== activeEffect) {
-      if (effect.scheduler) {
-        effect.scheduler();
-      } else {
-        effect.run();
-      }
-    }
-  }
-}
+//   deps.push(depsMap);
+//   // return
+//   if (deps.length === 1) {
+//     if (deps[0]) {
+//       triggerEffects(deps);
+//     }
+//   } else {
+//   }
+// }
+// export function triggerEffects(dep) {
+//   // spread into array for stabilization
+//   for (const effect of isArray(dep) ? dep : [...dep]) {
+//     if (effect !== activeEffect) {
+//       if (effect.scheduler) {
+//         effect.scheduler();
+//       } else {
+//         effect.run();
+//       }
+//     }
+//   }
+// }
 
 // 清除
 function cleanupEffect(effect) {
