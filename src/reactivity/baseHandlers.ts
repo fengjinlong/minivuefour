@@ -1,5 +1,5 @@
 import { extend, isObject } from "../shared";
-import { track, trigger } from "./effect2";
+import { track, trigger } from "./effect";
 import { reactive, ReactiveFlegs, readonly } from "./reactive";
 
 // shallow 浅层次

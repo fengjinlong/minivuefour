@@ -1,4 +1,4 @@
-import { effect } from "../effect2";
+import { effect } from "../effect";
 import { isProxy, isReactive, reactive } from "../reactive";
 // import { reactive } from "../reactive";
 describe("reactive", () => {

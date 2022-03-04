@@ -1,5 +1,6 @@
 import { extend } from "../shared";
 
+let shouldTract;
 export class ReactiveEffect {
   private _fn: any;
   deps = [];
@@ -55,7 +56,6 @@ function cleanUpEffect(effect) {
 }
 let targetMap = new Map();
 let activeEffect;
-let shouldTract;
 
 export function track(target, key) {
   if (!isTracking()) return;
@@ -94,7 +94,10 @@ export function effect(fn, options: any = {}) {
   const _effect = new ReactiveEffect(fn, options.scheduler);
   _effect.onStop = options.onStop;
   extend(_effect, options);
-  _effect.run();
+  if (!options.lazy) {
+
+    _effect.run();
+  }
 
   const runner: any = _effect.run.bind(_effect);
   runner.effect = _effect;
@@ -102,6 +105,7 @@ export function effect(fn, options: any = {}) {
 }
 export function trigger(target, key) {
   let depsMap = targetMap.get(target);
+  if (!depsMap) return
   let dep = depsMap.get(key);
 
   triggerEffect(dep);
