@@ -22,6 +22,7 @@ function createGetter(isReadOnly = false, shallow = false) {
       track(target, key);
     }
     return res;
+    
   };
 }
 function createSetter() {
