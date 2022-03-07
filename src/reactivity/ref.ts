@@ -54,6 +54,7 @@ export function isRef(value) {
 export function unRef(value) {
   return !!value.__v_isRef ? value.value : value
 }
+// age 省略 .value 的写法
 export function proxyRefs(objectWithRefs) {
   return new Proxy(objectWithRefs, {
     get (target, key) {

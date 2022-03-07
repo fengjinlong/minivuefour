@@ -64,6 +64,7 @@ describe("ref", () => {
       age: ref(10),
       name: "xxx",
     };
+    // age 省略 .value 的写法
     const proxyUser = proxyRefs(user);
     expect(user.age.value).toBe(10);
     expect(proxyUser.age).toBe(10);
@@ -76,6 +77,5 @@ describe("ref", () => {
     proxyUser.age = ref(10);
     expect(proxyUser.age).toBe(10);
     expect(user.age.value).toBe(10);
-    
   });
 });
