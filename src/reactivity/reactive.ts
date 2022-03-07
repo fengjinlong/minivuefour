@@ -1,6 +1,6 @@
 // import { track, trigger } from "./effect";
 import { mutableHandles, readonlyHandles, shallowReadonlyHandles } from "./baseHandlers";
-import { track, trigger } from "./effect2";
+import { track, trigger } from "./effect";
 export const enum ReactiveFlegs {
   IS_REACTIVE = '__v_isReactive',
   IS_READONLY = '__v_isREADONLY'

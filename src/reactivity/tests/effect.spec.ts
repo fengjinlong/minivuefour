@@ -1,5 +1,5 @@
 // import { effect, stop } from "../effect";
-import { effect, stop } from "../effect2";
+import { effect, stop } from "../effect";
 import { reactive } from "../reactive";
 describe("effect", () => {
   it("happy path", () => {
@@ -98,41 +98,41 @@ describe("effect", () => {
     expect(onStop).toBeCalledTimes(1);
   });
 
-  it("effect 压栈的测试", () => {
-    const counter = reactive({
-      num: 0,
-      num2: 0,
-    });
+  // it("effect 压栈的测试", () => {
+  //   const counter = reactive({
+  //     num: 0,
+  //     num2: 0,
+  //   });
 
-    effect(() => {
-      effect(() => {
-        console.log("num2:", counter.num2);
-      });
-      console.log("num:", counter.num);
-    });
-    counter.num++;
-    expect(counter.num).toBe(1)
-  });
-  it("double effect", () => {
-    const obj = reactive({
-      a: 1,
-      b: 1,
-    });
-    let temp1;
-    let temp2;
-    effect(() => {
-      console.log("effect1");
-      effect(() => {
-        console.log("effect2");
-        temp2 = obj.b + 1;
-      });
-      console.log("ok");
+  //   effect(() => {
+  //     effect(() => {
+  //       console.log("num2:", counter.num2);
+  //     });
+  //     console.log("num:", counter.num);
+  //   });
+  //   counter.num++;
+  //   expect(counter.num).toBe(1)
+  // });
+  // it("double effect", () => {
+  //   const obj = reactive({
+  //     a: 1,
+  //     b: 1,
+  //   });
+  //   let temp1;
+  //   let temp2;
+  //   effect(() => {
+  //     console.log("effect1");
+  //     effect(() => {
+  //       console.log("effect2");
+  //       temp2 = obj.b + 1;
+  //     });
+  //     console.log("ok");
 
-      temp1 = obj.a + 1;
-    });
-    obj.a = 2;
-    expect(temp1).toBe(3);
-  });
+  //     temp1 = obj.a + 1;
+  //   });
+  //   obj.a = 2;
+  //   expect(temp1).toBe(3);
+  // });
   it("lazy", () => {
     const obj = reactive({
       a:1

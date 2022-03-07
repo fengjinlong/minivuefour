@@ -45,7 +45,10 @@ describe('computed', () => {
 
     // 测试 2 
     value.foo = 2
+
     
+    // 触发set，触发trigger，调用getter，如果执行100次，那么就是触发100次的 set-trigger-getter,
+    // 这显然不合理。触发set 只是把dirty 打开，当你下次调用get 时候会自动只触发一次 getter
     // 测试 3 触发set 操作，同样不想再次调用一次getter()，不然缓存有什么用
     expect(getter).toHaveBeenCalledTimes(1)
     

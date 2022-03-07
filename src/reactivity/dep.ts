@@ -1,4 +1,4 @@
-import { trackOpBit } from './effect2'
+import { trackOpBit } from './effect'
 export const createDep = (effects?) => {
   const dep: any= new Set(effects)
   dep.w = 0

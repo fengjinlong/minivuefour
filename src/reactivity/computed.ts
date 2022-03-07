@@ -1,5 +1,5 @@
-import { effect } from "./effect2";
-import { ReactiveEffect } from "./effect2";
+import { effect } from "./effect";
+import { ReactiveEffect } from "./effect";
 // .value
 // 缓存 dirty
 class Com {
