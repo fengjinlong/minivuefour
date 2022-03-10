@@ -26,11 +26,12 @@ function handleSetupResult(instance, setupResult: any) {
     instance.setupState = setupResult;
   }
 
-  finshComponentSetup(instance);
+  finishComponentSetup(instance);
 }
 
-function finshComponentSetup(instance: any) {
-  const component = instance.type;
+function finishComponentSetup(instance: any) {
+  console.log(instance);
+  const component = instance.vnode.type;
 
   instance.render = component.render;
 }
