@@ -36,9 +36,7 @@ function processElement(vnode: any, container: any) {
   if (typeof children === "string") {
     el.textContent = children;
   } else if (isArray(children)) {
-    for (const child of children) {
-      patch(child, el);
-    }
+    mountChildren(vnode, el);
   }
 
   for (const prop in props) {
@@ -47,4 +45,9 @@ function processElement(vnode: any, container: any) {
   }
 
   container.append(el);
+}
+function mountChildren(vnode: any, el: any) {
+  for (const child of vnode.children) {
+    patch(child, el);
+  }
 }

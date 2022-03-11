@@ -1,6 +1,7 @@
 export function createComponentInstance(vnode) {
   const instance = {
     vnode,
+    type: vnode.type,
   };
   return instance;
 }
@@ -14,7 +15,7 @@ export function setupComponent(instance) {
 }
 
 function setupStatefulComponent(instance: any) {
-  const component = instance.vnode.type;
+  const component = instance.type;
   const { setup } = component;
   if (setup) {
     const setupResult = setup();
