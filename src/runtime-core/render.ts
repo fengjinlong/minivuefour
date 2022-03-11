@@ -1,5 +1,6 @@
 import { isArray, isObject } from "../shared";
 import { createComponentInstance, setupComponent } from "./component";
+import { createVNode } from "./vnode";
 
 export function render(vnode, container) {
   patch(vnode, container);
@@ -17,20 +18,22 @@ function processComponent(vnode: any, container: any) {
   mountComponent(vnode, container);
 }
 
-function mountComponent(vnode: any, container: any) {
-  const instance = createComponentInstance(vnode);
+function mountComponent(initialVnode: any, container: any) {
+  const instance = createComponentInstance(initialVnode);
   // 初始化 props solts setupState
   setupComponent(instance);
   // 组件实例 调用 render
-  setupRenderEffect(instance, container);
+  setupRenderEffect(instance, initialVnode, container);
 }
-function setupRenderEffect(instance: any, container: any) {
-  // 执行 render 是为了获取 vnode，然后进行 patch
-  const subTree = instance.render();
+function setupRenderEffect(instance: any, initialVnode, container: any) {
+  const { proxy } = instance;
+  // 执行 render 是为了获取 vnode，然后进行 patch element
+  const subTree = instance.render.call(proxy);
   patch(subTree, container);
+  initialVnode.el = subTree.el;
 }
 function processElement(vnode: any, container: any) {
-  const el = document.createElement(vnode.type);
+  const el = (vnode.el = document.createElement(vnode.type));
   const { props, children } = vnode;
 
   if (typeof children === "string") {
