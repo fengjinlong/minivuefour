@@ -7,6 +7,8 @@ export function createComponentInstance(vnode) {
     proxy: {},
   };
   return instance;
+
+  
 }
 export function setupComponent(instance) {
   // 初始化
