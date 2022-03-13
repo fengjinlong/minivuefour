@@ -1,4 +1,5 @@
 import { isArray, isObject } from "../shared";
+import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { createVNode } from "./vnode";
 
@@ -6,9 +7,10 @@ export function render(vnode, container) {
   patch(vnode, container);
 }
 function patch(vnode: any, container: any) {
-  if (typeof vnode.type === "string") {
+  const { shapeFlag } = vnode;
+  if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, container);
-  } else if (isObject(vnode.type)) {
+  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     // 组件
     processComponent(vnode, container);
   }
@@ -34,11 +36,11 @@ function setupRenderEffect(instance: any, initialVnode, container: any) {
 }
 function processElement(vnode: any, container: any) {
   const el = (vnode.el = document.createElement(vnode.type));
-  const { props, children } = vnode;
+  const { props, children, shapeFlag } = vnode;
 
-  if (typeof children === "string") {
+  if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children;
-  } else if (isArray(children)) {
+  } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
     mountChildren(vnode, el);
   }
 
